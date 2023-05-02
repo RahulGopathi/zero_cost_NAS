@@ -7,7 +7,8 @@ from xautodl.datasets.DownsampledImageNet import ImageNet16
 
 Dataset2Class = {'cifar10' : 10,
                  'cifar100' : 100,
-                 'ImageNet16-120': 120}
+                 'ImageNet16-120': 120,
+                 'ImageNetDogs': 120}
 
 def get_datasets(name, root):
 
@@ -20,6 +21,9 @@ def get_datasets(name, root):
   elif name.startswith('ImageNet16'):
     mean = [x / 255 for x in [122.68, 116.66, 104.01]]
     std  = [x / 255 for x in [63.22,  61.26 , 65.09]]
+  elif name == 'ImageNetDogs':
+    mean = [x / 255 for x in [0.485, 0.456, 0.406]]
+    std = [x / 255 for x in [0.229, 0.224, 0.225]]
   else:
     raise TypeError("Unknow dataset : {:}".format(name))
 
@@ -35,6 +39,11 @@ def get_datasets(name, root):
     train_transform = transforms.Compose(lists)
     test_transform  = transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean, std)])
     xshape = (1, 3, 16, 16)
+  elif name == 'ImageNetDogs':
+    lists = [transforms.RandomResizedCrop(224), transforms.RandomHorizontalFlip(), transforms.ToTensor(), transforms.Normalize(mean, std)]
+    train_transform = transforms.Compose(lists)
+    test_transform = transforms.Compose([transforms.Resize(256), transforms.CenterCrop(224), transforms.ToTensor(), transforms.Normalize(mean, std)])
+    xshape = (1, 3, 224, 224)
   else:
     raise TypeError("Unknow dataset : {:}".format(name))
 
@@ -51,6 +60,10 @@ def get_datasets(name, root):
     train_data = ImageNet16(root, True , train_transform, 120)
     test_data  = ImageNet16(root, False, test_transform , 120)
     assert len(train_data) == 151700 and len(test_data) == 6000
+  elif name == 'ImageNetDogs':
+    train_data = ImageNetDogs(root, train=True , transform=train_transform, download=True)
+    test_data = ImageNetDogs(root, train=False, transform=test_transform , download=True)
+    assert len(train_data) == 12000 and len(test_data) == 8580
   else: raise TypeError("Unknow dataset : {:}".format(name))
 
 

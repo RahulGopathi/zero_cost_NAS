@@ -23,7 +23,7 @@ args_score = args.score
 args_save_loc = args.save_loc
 
 #check if the inputs are valid
-valid_datasets = ['cifar10', 'cifar100', 'ImageNet16-120']
+valid_datasets = ['cifar10', 'cifar100', 'ImageNet16-120', 'ImageNetDogs']
 valid_metrics = ['val12', 'hook_logdet', 'synflow', 'snip', 'combined']
 
 if args_dataset not in valid_datasets:
